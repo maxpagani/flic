@@ -11,6 +11,7 @@
 #if !defined( FLIC_EITHER_HH )
 
 #include <type_traits>
+#include <variant>
 
 /**
  * @brief Either class representing either a value or another.
@@ -31,6 +32,9 @@ class Either
         static Either Left( L&& left ) noexcept;
         static Either Right( R&& right ) noexcept;
 
+        R const& right() const;
+        L const& left() const;
+
         template<typename FL,typename FR>
         std::invoke_result_t<FL,L> fold( FL fl, FR fr ) const;
 
@@ -49,8 +53,10 @@ class Either
         void foreach( F f ) const;
 
         Either<R,L> reverse() const noexcept;
+
+        void swap( Either& other ) noexcept;
     private:
-        Either( std::variant<L,R>&& implementation );
+        explicit Either( std::variant<L,R>&& implementation );
 
         std::variant<L,R> m_variant;
 };
@@ -58,6 +64,10 @@ class Either
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::: implementation :::
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template<typename L,typename R>
+Either<L,R>::Either( std::variant<L,R>&& implementation ) : m_variant{ implementation }
+{}
 
 template<typename L,typename R>
 Either<L,R> 
@@ -82,9 +92,21 @@ Either<L,R>::Left( L&& left ) noexcept
 
 template<typename L,typename R>
 Either<L,R> 
-Either<L,R>::Right( L&& right ) noexcept
+Either<L,R>::Right( R&& right ) noexcept
 {
     return Either{ std::move( std::variant<L,R>{ std::in_place_index<1>, std::move(right) } ) };
+}
+
+template<typename L,typename R> inline
+R Either<L,R>::right() const
+{
+    return m_variant[1];
+}
+
+template<typename L,typename R> inline
+L Either<L,R>::left() const
+{
+    return m_variant[0];
 }
 
 template<typename L,typename R>
@@ -138,6 +160,12 @@ template<typename L,typename R>
 Either<R,L> Either<L,R>::reverse() const noexcept
 {
     return isRight() ? Left( right() ) : Right( left() );
+}
+
+template<typename L,typename R> inline
+void Either<L,R>::swap( Either& other ) noexcept
+{
+    m_variant.swap( other.m_variant )
 }
 
 
