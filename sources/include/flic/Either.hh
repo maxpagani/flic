@@ -27,8 +27,8 @@ template<typename L,typename R>
 class Either
 {
     public:
-        static Either Left( L left ) noexcept;
-        static Either Right( R right ) noexcept;
+        static Either Left( L const& left ) noexcept( noexcept( L(left) ));
+        static Either Right( R const& right ) noexcept( noexcept( R(right)));
         static Either Left( L&& left ) noexcept;
         static Either Right( R&& right ) noexcept;
 
@@ -47,7 +47,15 @@ class Either
         bool isRight() const noexcept;
         bool isLeft() const noexcept;
 
-        R getOrElse( R const& d ) const noexcept;
+        /**
+         * @brief Gets the right value or a default value.
+         * 
+         * @param d the default value. Note that this value is returned to
+         *          the caller, therefore this value lifetime has to be 
+         *          adequate.
+         * @return R const& 
+         */
+        R const& getOrElse( R const& d ) const noexcept;
 
         template<typename F>
         void foreach( F f ) const;
@@ -71,14 +79,14 @@ Either<L,R>::Either( std::variant<L,R>&& implementation ) : m_variant{ implement
 
 template<typename L,typename R>
 Either<L,R> 
-Either<L,R>::Left( L left ) noexcept
+Either<L,R>::Left( L const& left ) noexcept( noexcept( L(left)))
 {
     return Either{ std::move( std::variant<L,R>{ std::in_place_index<0>, left } ) };
 }
 
 template<typename L,typename R>
 Either<L,R> 
-Either<L,R>::Right( R right ) noexcept
+Either<L,R>::Right( R const& right ) noexcept( noexcept( R(right)))
 {
     return Either{ std::move( std::variant<L,R>{ std::in_place_index<1>, left } ) };
 }
@@ -98,15 +106,15 @@ Either<L,R>::Right( R&& right ) noexcept
 }
 
 template<typename L,typename R> inline
-R Either<L,R>::right() const
+R const& Either<L,R>::right() const
 {
-    return m_variant[1];
+    return std::get<1>(m_variant);
 }
 
 template<typename L,typename R> inline
-L Either<L,R>::left() const
+L const& Either<L,R>::left() const
 {
-    return m_variant[0];
+    return std::get<0>(m_variant);
 }
 
 template<typename L,typename R>
@@ -140,11 +148,11 @@ template<typename L,typename R>
 template<typename F>
 std::invoke_result_t<F,R> Either<L,R>::flatMap( F f ) const
 {
-    return isRight() : f(right()) : *this;
+    return isRight() ? f(right()) : *this;
 }
 
 template<typename L,typename R>
-R Either<L,R>::getOrElse( R const& d ) const noexcept
+R const& Either<L,R>::getOrElse( R const& d ) const noexcept
 {
     return isRight() ? right() : d;
 }
@@ -165,7 +173,7 @@ Either<R,L> Either<L,R>::reverse() const noexcept
 template<typename L,typename R> inline
 void Either<L,R>::swap( Either& other ) noexcept
 {
-    m_variant.swap( other.m_variant )
+    m_variant.swap( other.m_variant );
 }
 
 

@@ -6,6 +6,7 @@
 
 #include <flic/Either.hh>
 #include <cassert>
+#include <string>
 
 namespace {
     void test_base()
@@ -28,13 +29,13 @@ namespace {
             assert( false );
         }
 
-        auto r = Either<int,std::string>::Right( 3 );
-        assert( l.isRight() );
-        assert( !l.isLeft() );
-        assert( l.right() == 3 );
+        auto r = Either<int,std::string>::Right( "abc" );
+        assert( r.isRight() );
+        assert( !r.isLeft() );
+        assert( r.right() == "abc" );
         try
         {
-            auto x = l.left();
+            auto x = r.left();
             assert( false );
         }
         catch( std::bad_variant_access const& )
