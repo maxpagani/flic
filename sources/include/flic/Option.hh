@@ -13,7 +13,8 @@ template<typename A>
 class Option
 {
     public:
-        explicit Option( A );
+        explicit Option( A const& a ) noexcept( noexcept( A(a)));
+        explicit Option( A&& a ) noexcept;
         Option();
 
         template<typename Fn>
@@ -87,16 +88,23 @@ Option<A> None()
 }
 
 template<typename A>
-Option<A> Some( A a )
+Option<A> Some( A const& a )
 {
     return Option<A>{ a };
 }
 
 template<typename A>
-Option<A>::Option( A a ) : 
+Option<A>::Option( A const& a ) noexcept(noexcept( A(a))): 
            m_isValid{true}
 {
     new( m_storage ) A{a};
+}
+
+template<typename A>
+Option<A>::Option( A&& a ) noexcept :
+           m_isValid{true}
+{
+    new( m_storage ) A{std::move(a)};
 }
 
 template<typename A>
