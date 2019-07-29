@@ -8,6 +8,7 @@
 #define FLIC_FILTERED_INDEX_HH
 
 #include <flic/Index.hh>
+#include <flic/lambda.hh>
 #include <functional>
 
 template<typename Idx>
@@ -41,7 +42,7 @@ FilteredIndex<Idx>::isValid() const
 template<typename Idx> inline auto 
 FilteredIndex<Idx>::get() const -> Option<IndexedType>
 {
-    m_base.get();
+    return m_base.flatMap( Lambda( x, x.get() ));
 }
 
 template<typename Idx>

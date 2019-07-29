@@ -24,6 +24,7 @@ namespace
         {
             int noValue = b.get();
             assert( false );
+            (void) noValue;
         }
         catch(const std::invalid_argument& e)
         {
@@ -50,6 +51,22 @@ namespace
         auto d = c.map( []( const int& x ){ return std::to_string(x); } );
         assert( d.isEmpty() );
     }
+
+    void
+    test_flatMap()
+    {
+        auto a = Some( 3 );
+        auto b = a.flatMap( []( const int& x ){ return Some( std::to_string(x)); });
+        assert( b.isDefined() );
+        assert( b.get() == "3" );
+
+        auto c = a.flatMap( []( const int& x ){return None<std::string>(); } );
+        assert( !c.isDefined() );
+
+        auto d = None<int>();
+        auto e = d.flatMap( []( const int& x ){return Some(std::to_string(x)); } );
+        assert( !e.isDefined() );
+    }
 }
 
 int
@@ -57,5 +74,6 @@ main( int argc, char** argv )
 {
     test_base();
     test_map();
+    test_flatMap();
     return 0;
 }

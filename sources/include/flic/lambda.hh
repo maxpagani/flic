@@ -12,6 +12,6 @@
 #if !defined( FLIC_LAMBDA_HH )
 #define  FLIC_LAMBDA_HH 
 
-#define Lambda(x,f)  []( auto& x ){ return (f); }
+#define Lambda(x,f)  []( auto const& x ){ return (f); }
 
 #endif

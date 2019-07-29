@@ -13,12 +13,17 @@ template<typename A>
 class Option
 {
     public:
+        typedef A BaseType;
+
         explicit Option( A const& a ) noexcept( noexcept( A(a)));
         explicit Option( A&& a ) noexcept;
         Option();
 
         template<typename Fn>
         Option<std::invoke_result_t<Fn,A>> map( Fn f ) const;
+
+        template<typename Fn>
+        std::invoke_result_t<Fn,A> flatMap( Fn f ) const;
 
 
         bool isDefined() const;
@@ -118,6 +123,15 @@ Option<A>::map( Fn f ) const
 {
     typedef std::invoke_result_t<Fn,A> B;
     return m_isValid ? Some<B>( f( constRef() ) ) : None<B>();
+}
+
+template<typename A>
+template<typename Fn>
+std::invoke_result_t<Fn,A>
+Option<A>::flatMap( Fn f ) const
+{
+    typedef typename std::invoke_result_t<Fn,A>::BaseType B;
+    return m_isValid ? f( constRef() ) : None<B>();
 }
 
 template<typename A> A const&
