@@ -25,7 +25,7 @@ class FilteredIndex
     private:
         static constexpr Idx findFirst( Idx index, std::function<bool(SourceType)> filter );
 
-        Option<Idx> m_base;
+        Idx m_base;
         std::function<bool(SourceType)> m_filter;
 };
 
@@ -36,13 +36,13 @@ class FilteredIndex
 template<typename Idx> inline bool
 FilteredIndex<Idx>::isValid() const
 {
-    return m_base.isDefined();
+    return m_base.isValid();
 }
 
 template<typename Idx> inline auto 
 FilteredIndex<Idx>::get() const -> Option<IndexedType>
 {
-    return m_base.flatMap( Lambda( x, x.get() ));
+    return m_base.get();
 }
 
 template<typename Idx>
@@ -85,7 +85,7 @@ constexpr Idx FilteredIndex<Idx>::findFirst( Idx index, std::function<bool(Sourc
 
 template<typename Idx>
 FilteredIndex<Idx>::FilteredIndex( Idx base, std::function<bool(SourceType)> filter ) :
-                    m_base{findFirst(base,filter)},
+                    m_base{ findFirst(base,filter)},
                     m_filter{std::move(filter)}
 {
 }
@@ -97,7 +97,7 @@ FilteredIndex<Idx>::next() const
     {
         return *this;
     }
-    auto index = m_base.get();
+    auto index = m_base.next();
     return FilteredIndex<Idx>{findFirst( index, m_filter ), m_filter};
     #if 0
     if( m_base.isEmpty() )

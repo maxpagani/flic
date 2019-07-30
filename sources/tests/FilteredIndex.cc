@@ -17,21 +17,13 @@ void test_base()
     auto filtered = FilteredIndex<decltype(index)>{ index, []( int x ){ return x >=3; } };
     for( int i=3; i<6; ++i )
     {
-        std::cout << i << "\n";
         assert( filtered.isValid() );
         Option<int> first = filtered.get();
         assert( first.isDefined() );
         assert( first.get() == i );
         filtered = filtered.next();
-        if( i < 5 ) 
-        {
-            assert( filtered.isValid() );
-        }
-        else
-        {
-            assert( !filtered.isValid());
-        }
     }
+    assert( !filtered.isValid() );
 }
 
 int main()
