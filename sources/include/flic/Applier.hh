@@ -15,6 +15,9 @@
 #include <vector>
 #include <list>
 #include <functional>
+#include <flic/Index.hh>
+#include <flic/MappedIndex.hh>
+#include <flic/FilteredIndex.hh>
 
 template<typename T>
 class Applier {
@@ -22,11 +25,16 @@ class Applier {
         template<class Iter>
         Applier( Iter begin, Iter end );
 
-        Applier( Index<T> index )
+        Applier( Index<T> index );
+
         template<typename B>
-        Applier map(std::function<B(T const&)> fn);
-        Applier filter(std::function<bool(T const&) fn);
-        Applier flatMap(std::function<B(T const&)> fn);
+        Applier<T> map(std::function<B(T const&)> fn);
+
+        Applier<T> filter(std::function<bool(T const&)> fn);
+
+        template<typename B>
+        Applier<T> flatMap(std::function<B(T const&)> fn);
+
         std::vector<T> toVector() const;
         std::list<T> toList() const;
     private:
@@ -34,7 +42,7 @@ class Applier {
         Index<T> m_source;
 };
 
-template<typename T> template<Iter>
+template<typename T> template<typename Iter>
 Applier<T>::Applier( Iter begin, Iter end ) :
             m_source{ begin, end }
 {}

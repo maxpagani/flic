@@ -5,7 +5,7 @@
  */
 
 #if !defined( FLIC_INDEX_HH )
-#define FLIX_INDEX_HH
+#define FLIC_INDEX_HH
 
 #include <flic/Option.hh>
 #include <type_traits>
