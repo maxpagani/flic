@@ -37,6 +37,11 @@ class Applier {
 
         std::vector<T> toVector() const;
         std::list<T> toList() const;
+
+        // fold, foldRight, foldLeft
+        // foreach
+        // exists
+        
     private:
 
         Index<T> m_source;
@@ -58,7 +63,7 @@ Applier<T> Applier<T>::map(std::function<B(T const&)> fn)
 {
     return Applier<T>{
         MappedIndex{
-            m_index,
+            m_source,
             fn
         }
     };
@@ -69,13 +74,13 @@ Applier Applier<T>::filter(std::function<bool(T const&) fn)
 {
     return Applier<T>{
         FilteredIndex{
-            m_index,
+            m_source,
             fn
         }
     };
 }
 
-template<typename T> 
+template<typename T> template<typename B> 
 Applier Applier<T>::flatMap(std::function<B(T const&)> fn)
 {
 
@@ -97,7 +102,7 @@ template<typename T>
 std::vector<T> Applier<T>::toVector() const
 {
     std::vector<T> result;
-    filler( result, m_index );
+    filler( result, m_source );
     return result;
 }
 
