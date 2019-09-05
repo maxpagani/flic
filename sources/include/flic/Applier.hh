@@ -19,21 +19,22 @@
 #include <flic/MappedIndex.hh>
 #include <flic/FilteredIndex.hh>
 
-template<typename T>
+template<typename Iter>
 class Applier {
     public:
-        template<class Iter>
+        typedef typename std::iterator_traits<Iter>::value_type T;
+
         Applier( Iter begin, Iter end );
 
-        Applier( Index<T> index );
+        Applier( Index<Iter> index );
 
         template<typename B>
-        Applier<T> map(std::function<B(T const&)> fn);
+        Applier<Iter> map(std::function<B(T const&)> fn);
 
-        Applier<T> filter(std::function<bool(T const&)> fn);
+        Applier<Iter> filter(std::function<bool(T const&)> fn);
 
         template<typename B>
-        Applier<T> flatMap(std::function<B(T const&)> fn);
+        Applier<Iter> flatMap(std::function<B(T const&)> fn);
 
         std::vector<T> toVector() const;
         std::list<T> toList() const;
@@ -41,27 +42,27 @@ class Applier {
         // fold, foldRight, foldLeft
         // foreach
         // exists
-        
+
     private:
 
-        Index<T> m_source;
+        Index<Iter> m_source;
 };
 
-template<typename T> template<typename Iter>
-Applier<T>::Applier( Iter begin, Iter end ) :
+template<typename Iter>
+Applier<Iter>::Applier( Iter begin, Iter end ) :
             m_source{ begin, end }
 {}
 
-template<typename T> 
-Applier<T>::Applier( Index<T> index ) :
+template<typename Iter>
+Applier<Iter>::Applier( Index<Iter> index ) :
             m_source{ index }
 {
 }
 
-template<typename T> template<typename B> 
-Applier<T> Applier<T>::map(std::function<B(T const&)> fn)
+template<typename Iter> template<typename B> 
+Applier<Iter> Applier<Iter>::map(std::function<B(T const&)> fn)
 {
-    return Applier<T>{
+    return Applier<Iter>{
         MappedIndex{
             m_source,
             fn
@@ -69,10 +70,10 @@ Applier<T> Applier<T>::map(std::function<B(T const&)> fn)
     };
 }
 
-template<typename T> 
-Applier Applier<T>::filter(std::function<bool(T const&) fn)
+template<typename Iter> 
+Applier<Iter> Applier<Iter>::filter(std::function<bool(T const&)> fn)
 {
-    return Applier<T>{
+    return Applier<Iter>{
         FilteredIndex{
             m_source,
             fn
@@ -80,37 +81,37 @@ Applier Applier<T>::filter(std::function<bool(T const&) fn)
     };
 }
 
-template<typename T> template<typename B> 
-Applier Applier<T>::flatMap(std::function<B(T const&)> fn)
+template<typename Iter> template<typename B> 
+Applier<Iter> Applier<Iter>::flatMap(std::function<B(T const&)> fn)
 {
 
 }
 
 namespace {
-    template<T,C> void
+    template<typename T, typename C> void
     filler( C& container, Index<T> scan )
     {
         while( scan.hasNext() )
         {
-            container.push_back( scan.get() );
+            container.push_back( scan.get().get() );
             scan = scan.next();
         }
     }
 }
 
-template<typename T> 
-std::vector<T> Applier<T>::toVector() const
+template<typename Iter> 
+auto Applier<Iter>::toVector() const -> std::vector<T>
 {
     std::vector<T> result;
     filler( result, m_source );
     return result;
 }
 
-template<typename T> 
-std::list<T> Applier<T>::toList() const
+template<typename Iter> 
+auto Applier<Iter>::toList() const -> std::list<T>
 {
     std::list<T> result;
-    filler( result, m_index );
+    filler( result, m_source );
     return result;
 }
 

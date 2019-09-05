@@ -15,8 +15,9 @@
 void
 basic_applier()
 {
-    auto v = std::array<int>{ 0, 1, 2, 3, 4 };
-    Applier<int> a{ std::begin(v), std::end(v) };
+    typedef std::array<int,5> TestArray;
+    auto v = std::array<int,5>{ 0, 1, 2, 3, 4 };
+    Applier<TestArray::const_iterator> a{ std::begin(v), std::end(v) };
     auto r = a.toVector();
     assert( std::equal( std::begin(v), std::end(v), std::begin(r)));
 }

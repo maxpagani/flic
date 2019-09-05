@@ -108,6 +108,12 @@ Index<It> Index<It>::next() const
     }
 }
 
+template<typename It> inline bool
+Index<It>::hasNext() const
+{
+    return m_current != m_end;
+}
+
 template<typename It>
 auto Index<It>::get() const -> Option<IndexedType>
 {
