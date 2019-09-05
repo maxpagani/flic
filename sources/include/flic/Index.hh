@@ -18,6 +18,7 @@ class Index
         typedef decltype(*m_current) BaseIndexedType;
         typedef typename std::remove_reference<BaseIndexedType>::type ConstIndexedType;
     public:
+        typedef It Iterator;
         /**
          * Indexed type. This is the type in the collection.
          */

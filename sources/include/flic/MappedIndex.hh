@@ -18,6 +18,8 @@ template<typename B,typename Idx>
 class MappedIndex
 {
     public:
+        typedef typename Idx::Iterator Iterator;
+
         typedef B IndexedType;
         typedef typename Idx::IndexedType SourceType;
         //typedef B (MapFn)( SourceType const& );

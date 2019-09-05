@@ -17,6 +17,8 @@ class FilteredIndex
     public:
         typedef typename Idx::IndexedType IndexedType;
         typedef typename Idx::IndexedType SourceType;
+        typedef typename Idx::Iterator Iterator;
+
         typedef bool (FilterFn)( SourceType const& );
         FilteredIndex( Idx base, std::function<bool(SourceType)> filter );
         FilteredIndex<Idx> next() const;
