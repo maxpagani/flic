@@ -30,12 +30,12 @@ filtered_mapped_applier()
     Applier<Index<TestArray::const_iterator>> a{ std::begin(v), std::end(v) };
     auto r = a.
         filter( [](int const & x){return x % 2 == 0;} ).
-        map( [](int const & x){ return std::to_string(x); } ).
+        map( [](int x) -> std::string { return std::to_string(x); } ).
         toVector();
-    auto expected = {"0","2","4"};
+    char const* expected[] = {"0","2","4"};
     assert(
         std::equal(
-            std::begin(v), std::end(v),
+            std::begin(r), std::end(r),
             std::begin( expected ), std::end(expected) 
         )
     );

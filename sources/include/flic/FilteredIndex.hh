@@ -21,6 +21,8 @@ class FilteredIndex
 
         typedef bool (FilterFn)( SourceType const& );
         FilteredIndex( Idx base, std::function<bool(SourceType)> filter );
+
+        bool hasNext() const;
         FilteredIndex<Idx> next() const;
         bool isValid() const;
         Option<IndexedType> get() const;
@@ -63,26 +65,6 @@ constexpr Idx FilteredIndex<Idx>::findFirst( Idx index, std::function<bool(Sourc
     {
         return index;
     }
-    #if 0
-    while( true )
-    {
-        auto oValue = index.get();
-        if( oValue.isEmpty() )
-        {
-            return None<Idx>();
-        }
-        if( filter( oValue.get() ))
-        {
-            return Some( index );
-        }
-        auto oIndex = index.next();
-        if( oIndex.isEmpty() )
-        {
-            return None<Idx>();
-        }
-        index = oIndex.get();
-    }
-    #endif
 }
 
 template<typename Idx>
@@ -90,6 +72,15 @@ FilteredIndex<Idx>::FilteredIndex( Idx base, std::function<bool(SourceType)> fil
                     m_base{ findFirst(base,filter)},
                     m_filter{std::move(filter)}
 {
+}
+
+template<typename Idx>
+bool FilteredIndex<Idx>::hasNext() const
+{
+    /// @todo this implementation leads to double scan of the Index - the
+    ///       first for hasNext() and the second for next(). Actually I 
+    ///       want just to study feasability. 
+    return next().isValid();
 }
 
 template<typename Idx> FilteredIndex<Idx>

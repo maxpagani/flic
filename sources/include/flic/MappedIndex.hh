@@ -26,6 +26,7 @@ class MappedIndex
         MappedIndex( Idx base, std::function<B(SourceType)> map );
         MappedIndex& operator=( MappedIndex const& ) = default;
 
+        bool hasNext() const;
         Option<MappedIndex<B,Idx>> next() const;
         bool isValid() const;
         Option<IndexedType> get() const;
@@ -39,6 +40,13 @@ MappedIndex<B,Idx>::MappedIndex( Idx base, std::function<B(SourceType)> map ) :
                     m_base{base},
                     m_map{std::move(map)}
 {
+}
+
+template<typename B,typename Idx> 
+inline bool
+MappedIndex<B,Idx>::hasNext() const
+{
+    return m_base.hasNext();
 }
 
 template<typename B,typename Idx> Option<MappedIndex<B,Idx>>
