@@ -27,7 +27,7 @@ class MappedIndex
         MappedIndex& operator=( MappedIndex const& ) = default;
 
         bool hasNext() const;
-        Option<MappedIndex<B,Idx>> next() const;
+        MappedIndex<B,Idx> next() const;
         bool isValid() const;
         Option<IndexedType> get() const;
     private:
@@ -49,11 +49,11 @@ MappedIndex<B,Idx>::hasNext() const
     return m_base.hasNext();
 }
 
-template<typename B,typename Idx> Option<MappedIndex<B,Idx>>
+template<typename B,typename Idx> MappedIndex<B,Idx>
 MappedIndex<B,Idx>::next() const
 {
-    Option<Idx> result = m_base.next();
-    return result.map( [this]( Idx const& x ){ return MappedIndex( x, m_map ); });
+    Idx result = m_base.next();
+    return MappedIndex( result, m_map );
 }
 
 template<typename B,typename Idx> bool

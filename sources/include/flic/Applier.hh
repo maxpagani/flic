@@ -23,7 +23,7 @@ template<typename Idx>
 class Applier {
     public:
         typedef typename Idx::Iterator Iter;
-        typedef typename std::iterator_traits<Iter>::value_type T;
+        typedef typename Idx::IndexedType T;
 
 
         Applier( Iter begin, Iter end );
