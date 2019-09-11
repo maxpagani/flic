@@ -22,7 +22,6 @@ class FilteredIndex
         typedef bool (FilterFn)( SourceType const& );
         FilteredIndex( Idx base, std::function<bool(SourceType)> filter );
 
-        bool hasNext() const;
         FilteredIndex<Idx> next() const;
         bool isValid() const;
         Option<IndexedType> get() const;
@@ -74,15 +73,6 @@ FilteredIndex<Idx>::FilteredIndex( Idx base, std::function<bool(SourceType)> fil
 {
 }
 
-template<typename Idx>
-bool FilteredIndex<Idx>::hasNext() const
-{
-    /// @todo this implementation leads to double scan of the Index - the
-    ///       first for hasNext() and the second for next(). Actually I 
-    ///       want just to study feasability. 
-    return next().isValid();
-}
-
 template<typename Idx> FilteredIndex<Idx>
 FilteredIndex<Idx>::next() const
 {
@@ -91,7 +81,7 @@ FilteredIndex<Idx>::next() const
         return *this;
     }
     auto index = m_base.next();
-    return FilteredIndex<Idx>{findFirst( index, m_filter ), m_filter};
+    return FilteredIndex<Idx>{ index, m_filter};
     #if 0
     if( m_base.isEmpty() )
     {

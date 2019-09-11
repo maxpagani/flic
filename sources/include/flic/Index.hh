@@ -43,14 +43,6 @@ class Index
         Index<It> next() const;
 
         /**
-         * Returns true if the next index is valid.
-         * 
-         * @retval true when next() yields a #isValid() index.
-         * @retval false when next() yields an invalid index.
-         */
-        bool hasNext() const;
-
-        /**
          * Attempts to retrieve the indexed element from the collection.
          * 
          * @retval Some<IndexedType>(x) when the index is valid, x is the value
@@ -107,12 +99,6 @@ Index<It> Index<It>::next() const
         ++current; 
         return Index{ current, m_end };
     }
-}
-
-template<typename It> inline bool
-Index<It>::hasNext() const
-{
-    return m_current != m_end;
 }
 
 template<typename It>

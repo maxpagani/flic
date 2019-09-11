@@ -93,10 +93,9 @@ namespace {
     template<typename Idx, typename C> void
     filler( C& container, Idx scan )
     {
-        while( scan.hasNext() )
+        for( ; scan.isValid(); scan = scan.next() )
         {
             container.push_back( scan.get().get() );
-            scan = scan.next();
         }
     }
 }

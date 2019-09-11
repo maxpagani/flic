@@ -12,6 +12,8 @@
 #include <flic/Applier.hh>
 #include <cassert>
 #include <iostream>
+#include <iterator>
+#include <vector>
 
 void
 basic_applier()
@@ -33,10 +35,6 @@ filter_applier()
         filter( [](int const & x){return (x % 2) == 0;} ).
         toVector();
     int expected[] = {0,2,4};
-    for( auto& x : r )
-    {
-        std::cout << x << "\n";
-    }
     assert(
         std::equal(
             std::begin(r), std::end(r),
@@ -57,10 +55,6 @@ filtered_mapped_applier()
         map<std::string>( [](int x) { return std::to_string(x); } ).
         toVector();
     char const* expected[] = {"0","2","4"};
-    for( auto& x : r )
-    {
-        std::cout << x << "\n";
-    }
     assert(
         std::equal(
             std::begin(r), std::end(r),
