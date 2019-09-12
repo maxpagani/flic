@@ -179,45 +179,70 @@ auto Applier<Idx>::fold( T const& zero, std::function<T(T const&,T const&)> fn )
     T result{ zero };
     for( auto scan = m_source; scan.isValid(); scan = scan.next() )
     {
-        result = fn( zero, scan.get().get() );
+        result = fn( result, scan.get().get() );
     }
     return result;
 }
 
 template<typename Idx> 
 template<typename R> R
-Applier<Idx>::foldLeft( R const& zero, std::function<R(R const&,T const&)> ) const
+Applier<Idx>::foldLeft( R const& zero, std::function<R(R const&,T const&)> fn ) const
 {
-
+    R result{ zero };
+    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    {
+        result = fn( result, scan.get().get() );
+    }
+    return result;
 }
 
 template<typename Idx> 
 template<typename R> R
-Applier<Idx>::foldRight( R const& zero, std::function<R(R const&,T const&)> ) const
+Applier<Idx>::foldRight( R const& zero, std::function<R(R const&,T const&)> fn ) const
 {
-
+    // Here we have to reverse the sequence or perform some recursion that
+    // does the same.
+    // on Scala, foldRight just creates a new reversed sequence
 }
 
 template<typename Idx> 
 void
-Applier<Idx>::foreach( std::function<void(T const&)> ) const
+Applier<Idx>::foreach( std::function<void(T const&)> fn ) const
 {
-
+    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    {
+        fn( scan.get().get() );
+    }
 }
 
 template<typename Idx> 
 bool
-Applier<Idx>::exists( std::function<bool(T const&)> ) const
+Applier<Idx>::exists( std::function<bool(T const&)> fn ) const
 {
-
+    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    {
+        if( fn( scan.get().get() ) )
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 template<typename Idx> 
 bool
-Applier<Idx>::forAll( std::function<bool(T const&)> ) const
+Applier<Idx>::forAll( std::function<bool(T const&)> fn ) const
 {
-
+    // this can be defined in terms of exists, but I would have to build
+    // another std::function.
+    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    {
+        if( !fn( scan.get().get() ) )
+        {
+            return false;
+        }
+    }
+    return true;
 }
-
 
 #endif
