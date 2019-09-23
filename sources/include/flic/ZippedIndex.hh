@@ -18,10 +18,8 @@ template<typename IL,typename IR>
 class ZippedIndex
 {
     public:
-        typename IL::IndexedType;
-        typename IR::IndexedType;
-        typedef IL::IndexedType L;
-        typedef IR::IndexedType R;
+        typedef typename IL::IndexedType L;
+        typedef typename IR::IndexedType R;
         typedef std::pair<L,R> IndexedType;
 
         ZippedIndex( IL indexLeft, IR indexRight );
@@ -51,15 +49,15 @@ ZippedIndex<IL,IR> ZippedIndex<IL,IR>::next() const
 template<typename IL,typename IR>
 auto ZippedIndex<IL,IR>::get() const -> Option<IndexedType>
 {
-    oLeft = m_indexLeft.get();
-    oRight = m_indexRight.get();
+    auto oLeft = m_indexLeft.get();
+    auto oRight = m_indexRight.get();
     auto oItem = oLeft.flatMap(
-        []( auto left ){
+        [&oRight]( auto left ){
             return oRight.map(
-                [left](auto right) {
+                [&left](auto right) {
                     return std::pair(left,right);
                 }
-            )
+            );
         }
     );
 
