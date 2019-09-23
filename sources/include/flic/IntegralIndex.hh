@@ -13,6 +13,7 @@
 #define FLIC_INTEGRAL_INDEX_HH
 
 #include <flic/Option.hh>
+#include <cassert>
 
 template<typename T>
 class IntegralIndex;
@@ -44,7 +45,9 @@ IntegralIndex<T>::IntegralIndex( T begin, T end, T step ) :
                   m_current{begin},
                   m_end{ end },
                   m_step{ step }
-{}
+{
+    assert( m_step != 0 );
+}
 
 template<typename T>
 IntegralIndex<T> IntegralIndex<T>::next() const
@@ -62,7 +65,15 @@ IntegralIndex<T> IntegralIndex<T>::next() const
 template<typename T> inline 
 bool IntegralIndex<T>::isValid() const
 {
-    return m_current < m_end;
+    if( m_step > 0 )
+    {
+        return m_current < m_end;
+    }
+    else
+    {
+        return m_current > m_end;
+    }
+    
 }
 
 template<typename T>

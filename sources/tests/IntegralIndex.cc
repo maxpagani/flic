@@ -52,6 +52,20 @@ namespace
         }
         assert( !index.isValid() );
     }
+
+    void test_negative_step()
+    {
+        IntegralIndex index{ 3, 0, -1 };
+        for( int i=3; i>0; --i )
+        {
+            assert( index.isValid() );
+            auto next = index.next();
+            assert( index.get().get() == i );
+            index = next;
+        }
+        assert( !index.isValid() );
+
+    }
 }
 
 int main()
@@ -61,5 +75,6 @@ int main()
     test_step(0,9);
     test_step(0,10);
     test_step(0,11);
+    test_negative_step();
     return 0;
 }
