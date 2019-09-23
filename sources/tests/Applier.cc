@@ -89,20 +89,44 @@ void foldRight_applier()
     int data[] = {1,2,3};
     Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
 
-    auto result = a.foldLeft<std::string>( "x"s, [](auto& r, auto& s){return r+std::to_string(s);});
+    auto result = a.foldRight<std::string>( "x"s, [](auto& r, auto& s){return r+std::to_string(s);});
     assert( result == "x321" );
 }
 
 void exists_applier()
 {
+    int data[] = {1,2,3};
+    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
 
+    for( int n : data )
+    {
+        assert( a.exists( [n]( int x ){ return x == n ; }));
+    }
+    assert( !a.exists( []( int x ){ return x == 42 ; }));
 }
 
 void forAll_applier()
 {
+    int data[] = {1,2,3};
+    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
 
+    auto min = *std::min_element( std::begin(data), std::end(data));
+    auto max = *std::max_element( std::begin(data), std::end(data));
+
+    assert( a.forAll( [min,max]( int x ){ return x >= min && x <= max ; }));
+    assert( !a.forAll( []( int x ){ return x == 1 ; }));
+    assert( !a.forAll( []( int x ){ return x == 3 ; }));
 }
 
+void forEach_applier()
+{
+    int data[] = {1,2,3};
+    int result = 0;
+    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
+
+    a.foreach( [&result](int n){ result = result*10 + n; });
+    assert( result == 123 );
+}
 
 int main( int argc, char** argv )
 {
@@ -114,6 +138,7 @@ int main( int argc, char** argv )
     foldRight_applier();
     exists_applier();
     forAll_applier();
+    forEach_applier();
 
     return 0;
 }

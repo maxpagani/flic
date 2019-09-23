@@ -15,9 +15,11 @@
 #include <vector>
 #include <list>
 #include <functional>
+#include <algorithm>
 #include <flic/Index.hh>
 #include <flic/MappedIndex.hh>
 #include <flic/FilteredIndex.hh>
+#include <flic/toString.hh>
 
 /**
  * @brief Class used to apply functional functors/operators.
@@ -84,26 +86,127 @@ class Applier {
         std::vector<T> toVector() const;
         std::list<T> toList() const;
 
+        /**
+         * @brief Fold is about reducing a sequence by repeatedly applying a
+         *        binary function to all the items in the sequence.
+         * THe result is obtained by invoking the binary function to the 
+         * partial result from the previous step and the current sequence item.
+         * The first partial result, used at the first invocation of the 
+         * provided function along with the first sequence element is provided
+         * as an argument (zero) to this function.
+         * 
+         * @param zero the initial result (also the result for an empty 
+         *             sequence)
+         * @return T the result of the fold operation. Given a sequence of 3
+         *           elements (e0,e1,e2) of type T and z as the argument zero
+         *           of type T, too. The result of the function will be:
+         * @code
+         *      f(f(f(z,e0),e1),e2)
+         * @endcode
+         * 
+         * @see #foldRight, #foldLeft
+         */
         T
         fold( T const& zero, std::function<T(T const&,T const&)> ) const;
 
+        /**
+         * @brief Like #fold but with the zero element of a type different from
+         *        the type of the elements in the sequence.
+         *        This is a generalization of #fold().
+         * 
+         * @tparam R the type of the result and the zero argument.
+         * @param zero the first argument to accompany the first item in the
+         *             sequence.
+         * @return R the result of the fold from left to right. Given a 
+         *           sequence of 3 elements (e0,e1,e2) of type T and z as the
+         *           argument zero of type R, too. The result of the foldRight
+         *           will be:
+         * @code
+         *      f(f(f(z,e0),e1),e2)
+         * @endcode
+         */
         template<typename R> R
         foldLeft( R const& zero, std::function<R(R const&,T const&)> ) const;
 
+        /**
+         * @brief Like #foldLeft, but performed from right to left.
+         * 
+         * @tparam R the type of the result and the zero argument.
+         * @param zero the first argument to accompany the last item in the
+         *             sequence.
+         * @return R the result of the fold from right to left. Given a 
+         *           sequence of 3 elements (e0,e1,e2) of type T and z as the
+         *           argument zero of type R, too. The result of the foldRight
+         *           will be:
+         * @code
+         *      f(e0,f(e1,f(e2,z)))
+         * @endcode
+         */
         template<typename R> R
         foldRight( R const& zero, std::function<R(R const&,T const&)> ) const;
 
+        /**
+         * @brief Applies a void function to each item in the sequence.
+         * 
+         * @param f the function to apply to each single item in the sequence.
+         *          f is invoked sequentially from left to right.
+         */
         void
-        foreach( std::function<void(T const&)> ) const;
+        foreach( std::function<void(T const&)> f ) const;
 
+        /**
+         * @brief Determines if at least one item in the sequence satisfies a
+         *        given condition.
+         * 
+         * @param p the predicate to evaluate. The evaluation stops at the 
+         *          first item that satisfies the condition.
+         * @return true exists at least one item i in the sequence for which 
+         *              p(i) is true.
+         * @return false p(i) is always false for each item i in the sequence.
+         */
         bool
-        exists( std::function<bool(T const&)> ) const;
+        exists( std::function<bool(T const&)> p ) const;
 
+        /**
+         * @brief Determines whether all items in the sequence satisfy a given
+         *        condition.
+         * 
+         * @param p the predicate to evaluate. The evaluation stops at the 
+         *          first item that doesn't satisfy the condition.
+         * @return true when for each item i in the sequence p(i) is true.
+         * @return false when exists at least one item i for which p(i) is
+         *               false.
+         */
         bool
-        forAll( std::function<bool(T const&)> ) const;
+        forAll( std::function<bool(T const&)> p ) const;
 
+        /**
+         * @brief Converts the sequence into a string.
+         * Items in the sequence must have a valid toString implementation (or,
+         * if they are classes, the toString method).
+         * 
+         * @param separator the optional character you want to use to separate
+         *                  item. By default this is a comma (',').
+         * @param leftDelimiter the optional left delimiter (the character at
+         *                      the left of the sequence). By default no 
+         *                      left delimiter is produced.
+         * @param rightDeIlimiter the optional right delimiter (the character
+         *                       at the right end of the sequence). By default
+         *                       no right delimiter is produced.
+         * 
+         * @note separators and delimiters are not produced in the output when
+         *       their value is '\0'.
+         * @return std::string a textual representation of the sequence.
+         */
+        std::string
+        makeString( char separator=',', char leftDelimiter='\0', char rightDelimiter='\0' ) const;
+
+        Applier<ZippedIndex<IndexedType,int>> zipWithIndex() const;
+
+        template<typename Other>
+        Applier<ZippedIndex<IndexedType,Other::IndexedType>>
+        zip( Index<Other>& other ) const;
     private:
-
         Idx m_source;
 };
 
@@ -200,9 +303,17 @@ template<typename Idx>
 template<typename R> R
 Applier<Idx>::foldRight( R const& zero, std::function<R(R const&,T const&)> fn ) const
 {
-    // Here we have to reverse the sequence or perform some recursion that
-    // does the same.
-    // on Scala, foldRight just creates a new reversed sequence
+    // This code is not constexpr since the sequence data is copied into a
+    // std::vector in order to go through backwards.
+    // If you want a constexpr implementation then you need to use the 
+    // recursion to sweep the data.
+    R result{zero};
+    auto data = toVector();
+    for( auto scan = data.rbegin(); scan != data.rend(); ++scan )
+    {
+        result = fn( result, *scan );
+    }
+    return result;
 }
 
 template<typename Idx> 
@@ -244,5 +355,37 @@ Applier<Idx>::forAll( std::function<bool(T const&)> fn ) const
     }
     return true;
 }
+
+template<typename Idx> 
+std::string
+Applier<Idx>::makeString( char separator, char leftDelimiter, char rightDelimiter ) const
+{
+    std::string result;
+    if( leftDelimiter )
+    {
+        result.append(leftDelimiter);
+    }
+    auto scan = m_source;
+    if( scan.isValid() )
+    {
+        result.append( toString( scan.get().get() ));
+        scan = scan.next();
+    }
+    for( ; scan.isValid(); scan = scan.next() )
+    {
+        if( separator )
+        {
+            result.append(separator);
+        }
+        result.append( toString( scan.get().get() ));
+    }
+    if( rightDelimiter )
+    {
+        result.append( rightDelimiter );
+    }
+    return result;
+
+}
+
 
 #endif
