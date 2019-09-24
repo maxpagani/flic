@@ -13,14 +13,9 @@
 #define FLIC_TO_STRING_HH
 
 #include <string>
+#include <sstream>
 
-template<class T> // T has a valid std::to_string( T const& ) function
-std::string toString( T const& x )
-{
-    return std::to_string( x );
-}
-
-template<class T> // T is a class && T::toString exists
+template<typename T, typename = std::enable_if_t<std::is_class<T>::value>>
 std::string toString( T const& t )
 {
     return t.toString();
@@ -33,5 +28,20 @@ std::string toString( T const& t )
     buffer << t;
     return buffer.str();
 }
+
+template<> inline
+std::string toString( std::string const& x )
+{
+    return x;
+}
+
+template<> std::string toString(const int& t) { return std::to_string(t); }
+template<> std::string toString(const long& t) { return std::to_string(t); }
+template<> std::string toString(const long long& t) { return std::to_string(t); }
+template<> std::string toString(const unsigned& t) { return std::to_string(t); }
+template<> std::string toString(const unsigned long& t) { return std::to_string(t); }
+template<> std::string toString(const unsigned long long& t) { return std::to_string(t); }
+template<> std::string toString(const float& t) { return std::to_string(t); }
+template<> std::string toString(const double& t) { return std::to_string(t); }
 
 #endif

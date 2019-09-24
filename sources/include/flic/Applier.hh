@@ -19,6 +19,7 @@
 #include <flic/Index.hh>
 #include <flic/MappedIndex.hh>
 #include <flic/FilteredIndex.hh>
+#include <flic/ZippedIndex.hh>
 #include <flic/toString.hh>
 
 /**
@@ -363,7 +364,7 @@ Applier<Idx>::makeString( char separator, char leftDelimiter, char rightDelimite
     std::string result;
     if( leftDelimiter )
     {
-        result.append(leftDelimiter);
+        result.append(1,leftDelimiter);
     }
     auto scan = m_source;
     if( scan.isValid() )
@@ -375,16 +376,15 @@ Applier<Idx>::makeString( char separator, char leftDelimiter, char rightDelimite
     {
         if( separator )
         {
-            result.append(separator);
+            result.append(1, separator);
         }
         result.append( toString( scan.get().get() ));
     }
     if( rightDelimiter )
     {
-        result.append( rightDelimiter );
+        result.append( 1, rightDelimiter );
     }
     return result;
-
 }
 
 
