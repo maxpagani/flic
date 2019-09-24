@@ -24,3 +24,22 @@ By using flic, you can write something that comes close enough, if you are not t
 ```
 
 Of course C++ will never be as concise and expressive as Scala is, but at least it could provide you some tools you are used to when coming from other languages. Also code written using functional approach tends to be more robust and with less bug.
+
+Moreover by proper use of metaprogramming and constexpr, the exression could, at least in line of principle, be compiled as:
+
+```c++
+std::string result{"seq"};
+for( int i=0; i<10; ++i )
+{
+    if( x > 3 )
+    {
+      result.append( std::to_string( x ));
+    }
+}
+// result in result;
+```
+
+Or even better (though I don't think optimizers could do this right now):
+```c++
+  std::string{ "seq:456789" };
+```
