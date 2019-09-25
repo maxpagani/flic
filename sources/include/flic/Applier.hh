@@ -35,16 +35,8 @@
 template<typename Idx>
 class Applier {
     public:
-        typedef typename Idx::Iterator Iter;
+        //typedef typename Idx::Iterator Iter;
         typedef typename Idx::IndexedType T;
-
-        /** Constructs an applier given a pair of iterators.
-         * 
-         * @param begin the iterator to the beginning of the container to 
-         *              iterate.
-         * @param end the iterator to the end of the container to iterate.
-         */
-        Applier( Iter begin, Iter end );
 
         /** Constructs an applier from an index.
          * 
@@ -202,19 +194,21 @@ class Applier {
         std::string
         makeString( char separator=',', char leftDelimiter='\0', char rightDelimiter='\0' ) const;
 
-        Applier<ZippedIndex<IndexedType,int>> zipWithIndex() const;
+        Applier<ZippedIndex<T,int>> zipWithIndex() const;
 
         template<typename Other>
-        Applier<ZippedIndex<IndexedType,Other::IndexedType>>
+        Applier<ZippedIndex<T,typename Other::IndexedType>>
         zip( Index<Other>& other ) const;
     private:
         Idx m_source;
 };
 
+/*
 template<typename Idx>
 Applier<Idx>::Applier( Iter begin, Iter end ) :
             m_source{ begin, end }
 {}
+*/
 
 template<typename Idx>
 Applier<Idx>::Applier( Idx index ) :

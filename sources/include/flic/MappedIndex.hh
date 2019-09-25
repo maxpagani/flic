@@ -18,8 +18,6 @@ template<typename B,typename Idx>
 class MappedIndex
 {
     public:
-        typedef typename Idx::Iterator Iterator;
-
         typedef B IndexedType;
         typedef typename Idx::IndexedType SourceType;
         //typedef B (MapFn)( SourceType const& );
@@ -29,6 +27,8 @@ class MappedIndex
         MappedIndex<B,Idx> next() const;
         bool isValid() const;
         Option<IndexedType> get() const;
+
+        MappedIndex<B,Idx> invalid() const;
     private:
         Idx m_base;
         std::function<B(SourceType)> m_map;
@@ -60,6 +60,12 @@ MappedIndex<B,Idx>::get() const -> Option<IndexedType>
     Option<SourceType> base = m_base.get(); 
     auto mapFn = [this]( SourceType const& x ){ return this->m_map(x); };
     return base.map( mapFn );
+}
+
+template<typename B,typename Idx>
+MappedIndex<B,Idx> MappedIndex<B,Idx>::invalid() const
+{
+    return MappedIndex<B,Idx>{m_base.invalid(), m_map };
 }
 
 #endif

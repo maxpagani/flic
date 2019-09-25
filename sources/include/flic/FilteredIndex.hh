@@ -17,7 +17,6 @@ class FilteredIndex
     public:
         typedef typename Idx::IndexedType IndexedType;
         typedef typename Idx::IndexedType SourceType;
-        typedef typename Idx::Iterator Iterator;
 
         typedef bool (FilterFn)( SourceType const& );
         FilteredIndex( Idx base, std::function<bool(SourceType)> filter );
@@ -25,6 +24,8 @@ class FilteredIndex
         FilteredIndex<Idx> next() const;
         bool isValid() const;
         Option<IndexedType> get() const;
+
+        FilteredIndex invalid() const;
     private:
         static constexpr Idx findFirst( Idx index, std::function<bool(SourceType)> filter );
 
@@ -96,5 +97,12 @@ FilteredIndex<Idx>::next() const
         .map( [this]( auto x) { return FilteredIndex<Idx>(x,m_filter); });
         #endif
 }
+
+template<typename Idx>
+FilteredIndex<Idx> FilteredIndex<Idx>::invalid() const
+{
+    return FilteredIndex<Idx>{m_base.invalid(),m_filter};
+}
+
 
 #endif

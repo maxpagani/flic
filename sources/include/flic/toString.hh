@@ -15,7 +15,7 @@
 #include <string>
 #include <sstream>
 
-template<typename T, typename = std::enable_if_t<std::is_class<T>::value>>
+template<typename T, typename = std::enable_if<std::is_function<decltype(T::toString)>::value>>
 std::string toString( T const& t )
 {
     return t.toString();

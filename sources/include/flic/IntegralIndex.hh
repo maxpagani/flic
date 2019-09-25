@@ -32,6 +32,8 @@ class IntegralIndex
         IntegralIndex<T> next() const;
         bool isValid() const;
         Option<T> get() const;
+
+        IntegralIndex<T> invalid() const;
     private:
         friend bool operator==<>( IntegralIndex<T> const&, IntegralIndex<T> const& );
 
@@ -88,6 +90,13 @@ Option<T> IntegralIndex<T>::get() const
         return None<T>();
     }
 }
+
+template<typename T>
+IntegralIndex<T> IntegralIndex<T>::invalid() const
+{
+    return IntegralIndex<T>{m_end,m_end,m_step};
+}
+
 
 template<typename T>
 bool operator==( IntegralIndex<T> const& lhs, IntegralIndex<T> const& rhs )

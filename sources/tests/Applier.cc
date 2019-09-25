@@ -10,11 +10,13 @@
  */
 
 #include <flic/Applier.hh>
+#include <flic/IntegralIndex.hh>
+#include <flic/ContainerIndex.hh>
 #include <cassert>
 #include <iostream>
 #include <iterator>
 #include <vector>
-
+#include <experimental/array>
 using namespace std::literals;
 
 void
@@ -22,7 +24,7 @@ basic_applier()
 {
     typedef std::array<int,5> TestArray;
     auto v = std::array<int,5>{ 0, 1, 2, 3, 4 };
-    Applier<Index<TestArray::const_iterator>> a{ std::begin(v), std::end(v) };
+    Applier<Index<TestArray::const_iterator>> a{ makeIndex(v) };
     auto r = a.toVector();
     assert( std::equal( std::begin(v), std::end(v), std::begin(r)));
 }
@@ -32,7 +34,7 @@ filter_applier()
 {
     typedef std::array<int,5> TestArray;
     auto v = std::array<int,5>{ 0, 1, 2, 3, 4 };
-    Applier<Index<TestArray::const_iterator>> a{ std::begin(v), std::end(v) };
+    Applier<Index<TestArray::const_iterator>> a{ makeIndex(v) };
     auto r = a.
         filter( [](int const & x){return (x % 2) == 0;} ).
         toVector();
@@ -51,7 +53,7 @@ filtered_mapped_applier()
 {
     typedef std::array<int,5> TestArray;
     auto v = std::array<int,5>{ 0, 1, 2, 3, 4 };
-    Applier<Index<TestArray::const_iterator>> a{ std::begin(v), std::end(v) };
+    Applier<Index<TestArray::const_iterator>> a{ makeIndex(v) };
     auto r = a.
         filter( [](int const & x){return x % 2 == 0;} ).
         map<std::string>( [](int x) { return std::to_string(x); } ).
@@ -68,8 +70,8 @@ filtered_mapped_applier()
 void
 fold_applier()
 {
-    int data[] = {2,3,5,7};
-    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
+    auto data = std::experimental::make_array(2,3,5,7);
+    Applier<Index<int const*>> a{ makeIndex(data) };
 
     auto result = a.fold( 1, [](int r, int s){return r*s;});
     assert( result == 1*2*3*5*7 );
@@ -77,8 +79,8 @@ fold_applier()
 
 void foldLeft_applier()
 {
-    int data[] = {1,2,3};
-    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
+    auto data = std::experimental::make_array(1,2,3);
+    Applier<Index<int const*>> a{ makeIndex(data) };
 
     auto result = a.foldLeft<std::string>( "x"s, [](auto& r, auto& s){return r+std::to_string(s);});
     assert( result == "x123" );
@@ -86,8 +88,8 @@ void foldLeft_applier()
 
 void foldRight_applier()
 {
-    int data[] = {1,2,3};
-    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
+    auto data = std::experimental::make_array(1,2,3);
+    Applier<Index<int const*>> a{ makeIndex(data) };
 
     auto result = a.foldRight<std::string>( "x"s, [](auto& r, auto& s){return r+std::to_string(s);});
     assert( result == "x321" );
@@ -95,8 +97,8 @@ void foldRight_applier()
 
 void exists_applier()
 {
-    int data[] = {1,2,3};
-    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
+    auto data = std::experimental::make_array(1,2,3);
+    Applier<Index<int const*>> a{ makeIndex(data) };
 
     for( int n : data )
     {
@@ -107,8 +109,8 @@ void exists_applier()
 
 void forAll_applier()
 {
-    int data[] = {1,2,3};
-    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
+    auto data = std::experimental::make_array(1,2,3);
+    Applier<Index<int const*>> a{ makeIndex(data) };
 
     auto min = *std::min_element( std::begin(data), std::end(data));
     auto max = *std::max_element( std::begin(data), std::end(data));
@@ -120,12 +122,25 @@ void forAll_applier()
 
 void forEach_applier()
 {
-    int data[] = {1,2,3};
+    auto data = std::experimental::make_array(1,2,3);
     int result = 0;
-    Applier<Index<int const*>> a{ std::begin(data), std::end(data) };
+    Applier<Index<int const*>> a{ makeIndex(data) };
 
     a.foreach( [&result](int n){ result = result*10 + n; });
     assert( result == 123 );
+}
+
+void
+demo_applier()
+{
+    auto source = IntegralIndex{0,10};
+    auto a = Applier{ source };
+    auto r = a
+        .filter( Lambda(x,x>3) )
+        .map<std::string>( Lambda(x,std::to_string(x)))
+        .fold( "seq:", []( std::string const& r, std::string const& x ){ return r+x; } );
+    std::cout << "r=" << r << "\n";
+    assert( r == "seq:456789" );
 }
 
 int main( int argc, char** argv )
@@ -139,6 +154,7 @@ int main( int argc, char** argv )
     exists_applier();
     forAll_applier();
     forEach_applier();
+    demo_applier();
 
     return 0;
 }
