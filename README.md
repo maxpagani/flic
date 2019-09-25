@@ -25,7 +25,7 @@ By using flic, you can write something that comes close enough, if you are not t
 
 Of course C++ will never be as concise and expressive as Scala is, but at least it could provide you some tools you are used to when coming from other languages. Also code written using functional approach tends to be more robust and with less bug.
 
-Moreover by proper use of metaprogramming and constexpr, the exression could, at least in line of principle, be compiled as:
+Moreover by proper use of metaprogramming and constexpr, the expression could, at least in line of principle, be compiled as:
 
 ```c++
 std::string result{"seq"};
