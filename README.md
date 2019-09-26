@@ -19,7 +19,7 @@ By using flic, you can write something that comes close enough, if you are not t
 ```c++
 1_i.to(10).
   filter( Lambda(x,x>3) ).
-  map<std::string>( Lambda(x,std::to_string(x)).
+  map<std::string>( Lambda(x,std::to_string(x))).
   fold( "seq:", []( std::string const& r, std::string const& x ){ return r+x; } );
 ```
 
