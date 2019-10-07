@@ -57,7 +57,7 @@ class Index
          * @retval true the indexed item is valid.
          * @retval false the indexed item is invalid.
          */
-        bool isValid() const;
+        bool isDefined() const;
 
         /**
          * Creates an invalid copy of this index. invalid().isValid() is
@@ -74,7 +74,7 @@ class Index
 // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template<typename It> inline bool 
-Index<It>::isValid() const
+Index<It>::isDefined() const
 {
     return m_current != m_end;
 }

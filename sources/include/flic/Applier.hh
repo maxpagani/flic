@@ -248,7 +248,7 @@ namespace {
     template<typename Idx, typename C> void
     filler( C& container, Idx scan )
     {
-        for( ; scan.isValid(); scan = scan.next() )
+        for( ; scan.isDefined(); scan = scan.next() )
         {
             container.push_back( scan.get().get() );
         }
@@ -275,7 +275,7 @@ template<typename Idx>
 auto Applier<Idx>::fold( T const& zero, std::function<T(T const&,T const&)> fn ) const -> T
 {
     T result{ zero };
-    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    for( auto scan = m_source; scan.isDefined(); scan = scan.next() )
     {
         result = fn( result, scan.get().get() );
     }
@@ -287,7 +287,7 @@ template<typename R> R
 Applier<Idx>::foldLeft( R const& zero, std::function<R(R const&,T const&)> fn ) const
 {
     R result{ zero };
-    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    for( auto scan = m_source; scan.isDefined(); scan = scan.next() )
     {
         result = fn( result, scan.get().get() );
     }
@@ -315,7 +315,7 @@ template<typename Idx>
 void
 Applier<Idx>::foreach( std::function<void(T const&)> fn ) const
 {
-    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    for( auto scan = m_source; scan.isDefined(); scan = scan.next() )
     {
         fn( scan.get().get() );
     }
@@ -325,7 +325,7 @@ template<typename Idx>
 bool
 Applier<Idx>::exists( std::function<bool(T const&)> fn ) const
 {
-    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    for( auto scan = m_source; scan.isDefined(); scan = scan.next() )
     {
         if( fn( scan.get().get() ) )
         {
@@ -341,7 +341,7 @@ Applier<Idx>::forAll( std::function<bool(T const&)> fn ) const
 {
     // this can be defined in terms of exists, but I would have to build
     // another std::function.
-    for( auto scan = m_source; scan.isValid(); scan = scan.next() )
+    for( auto scan = m_source; scan.isDefined(); scan = scan.next() )
     {
         if( !fn( scan.get().get() ) )
         {
@@ -361,12 +361,12 @@ Applier<Idx>::makeString( char separator, char leftDelimiter, char rightDelimite
         result.append(1,leftDelimiter);
     }
     auto scan = m_source;
-    if( scan.isValid() )
+    if( scan.isDefined() )
     {
         result.append( toString( scan.get().get() ));
         scan = scan.next();
     }
-    for( ; scan.isValid(); scan = scan.next() )
+    for( ; scan.isDefined(); scan = scan.next() )
     {
         if( separator )
         {

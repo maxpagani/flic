@@ -20,24 +20,24 @@ namespace
 
         for( int i=3; i<7; ++i )
         {
-            assert( index.isValid() );
+            assert( index.isDefined() );
             auto next = index.next();
             assert( index.get().get() == i );
             index = next;
         }
-        assert( !index.isValid() );
+        assert( !index.isDefined() );
     }
 
     void
     test_limit()
     {
         IntegralIndex index{ 3, 3 };
-        assert( !index.isValid() );
+        assert( !index.isDefined() );
         auto next = index.next();
         assert( next == index );
 
         IntegralIndex invalid{ 3, 2 };
-        assert( !index.isValid() );
+        assert( !index.isDefined() );
     }
 
     void
@@ -46,11 +46,11 @@ namespace
         IntegralIndex index{ b, e, 3 };
         for( int i=b; i<e; i += 3 )
         {
-            assert( index.isValid() );
+            assert( index.isDefined() );
             assert( index.get().get() == i );
             index = index.next();
         }
-        assert( !index.isValid() );
+        assert( !index.isDefined() );
     }
 
     void test_negative_step()
@@ -58,12 +58,12 @@ namespace
         IntegralIndex index{ 3, 0, -1 };
         for( int i=3; i>0; --i )
         {
-            assert( index.isValid() );
+            assert( index.isDefined() );
             auto next = index.next();
             assert( index.get().get() == i );
             index = next;
         }
-        assert( !index.isValid() );
+        assert( !index.isDefined() );
 
     }
 }

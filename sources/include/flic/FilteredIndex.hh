@@ -22,7 +22,7 @@ class FilteredIndex
         FilteredIndex( Idx base, std::function<bool(SourceType)> filter );
 
         FilteredIndex<Idx> next() const;
-        bool isValid() const;
+        bool isDefined() const;
         Option<IndexedType> get() const;
 
         FilteredIndex invalid() const;
@@ -38,9 +38,9 @@ class FilteredIndex
 // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template<typename Idx> inline bool
-FilteredIndex<Idx>::isValid() const
+FilteredIndex<Idx>::isDefined() const
 {
-    return m_base.isValid();
+    return m_base.isDefined();
 }
 
 template<typename Idx> inline auto 
@@ -53,7 +53,7 @@ template<typename Idx>
 constexpr Idx FilteredIndex<Idx>::findFirst( Idx index, std::function<bool(SourceType)> filter )
 {
     bool isIgnored = true;
-    while( index.isValid() && (isIgnored = !filter(index.get().get())) )
+    while( index.isDefined() && (isIgnored = !filter(index.get().get())) )
     {
         index = index.next();
     }
@@ -77,7 +77,7 @@ FilteredIndex<Idx>::FilteredIndex( Idx base, std::function<bool(SourceType)> fil
 template<typename Idx> FilteredIndex<Idx>
 FilteredIndex<Idx>::next() const
 {
-    if( !isValid() )
+    if( !isDefined() )
     {
         return *this;
     }
@@ -95,7 +95,7 @@ FilteredIndex<Idx>::next() const
     }
     return findFirst( result.get(), m_filter )
         .map( [this]( auto x) { return FilteredIndex<Idx>(x,m_filter); });
-        #endif
+    #endif
 }
 
 template<typename Idx>

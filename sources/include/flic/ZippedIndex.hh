@@ -14,6 +14,15 @@
 
 #include <flic/Option.hh>
 
+/**
+ * ZippedIndex creates a new index by zipping together two source indexes.
+ * Given sequence (0,1,2,3) and sequence ('a','b','c','d') the zipped
+ * sequence is ( (0,'a'), (1,'b'), (2,'c'), (3,'d')) where type of elements in
+ * the sequence is std::pair.
+ *
+ * The zipped sequence is long as the shortest source sequence.
+ */
+
 template<typename IL,typename IR>
 class ZippedIndex
 {
@@ -25,11 +34,15 @@ class ZippedIndex
         ZippedIndex( IL indexLeft, IR indexRight );
         ZippedIndex<IL,IR> next() const;
         Option<IndexedType> get() const;
-        bool isValid() const;
+        bool isDefined() const;
     private:
         IL m_indexLeft;
         IR m_indexRight;
 };
+
+// :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+// :::::::::::::::::::::::::::::::::::::::::::::::::::::::: implementation :::
+// :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template<typename IL,typename IR>
 ZippedIndex<IL,IR>::ZippedIndex( IL indexLeft, IR indexRight ) :
@@ -65,9 +78,9 @@ auto ZippedIndex<IL,IR>::get() const -> Option<IndexedType>
 }
 
 template<typename IL,typename IR>
-bool ZippedIndex<IL,IR>::isValid() const
+inline bool ZippedIndex<IL,IR>::isDefined() const
 {
-    return m_indexLeft.isValid() && m_indexRight.isValid();
+    return m_indexLeft.isDefined() && m_indexRight.isDefined();
 }
 
 #endif

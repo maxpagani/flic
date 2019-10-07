@@ -17,13 +17,13 @@ void test_base()
     auto filtered = FilteredIndex<decltype(index)>{ index, []( int x ){ return x >=3; } };
     for( int i=3; i<6; ++i )
     {
-        assert( filtered.isValid() );
+        assert(filtered.isDefined() );
         Option<int> first = filtered.get();
         assert( first.isDefined() );
         assert( first.get() == i );
         filtered = filtered.next();
     }
-    assert( !filtered.isValid() );
+    assert( !filtered.isDefined() );
 }
 
 void test_edge()
@@ -33,13 +33,13 @@ void test_edge()
     auto filtered = FilteredIndex<decltype(index)>{ index, []( int x ){ return (x % 2) == 0; } };
     for( int i=0; i<=6; i+=2 )
     {
-        assert( filtered.isValid() );
+        assert(filtered.isDefined() );
         Option<int> first = filtered.get();
         assert( first.isDefined() );
         assert( first.get() == i );
         filtered = filtered.next();
     }
-    assert( !filtered.isValid() );
+    assert( !filtered.isDefined() );
 }
 
 int main()

@@ -15,20 +15,20 @@ void test_base()
     auto index = Index<std::array<int,4>::const_iterator>( std::cbegin(set), std::cend(set) );
     for( int i=0; i<4; ++i )
     {
-        assert( index.isValid() );
+        assert(index.isDefined() );
         Option<int> first = index.get();
         assert( first.isDefined() );
         assert( first.get() == i );
         auto oi = index.next();
-        if( i==4 )
+        if( i>=3 )
         {
-            assert( oi.isEmpty() );
+            assert( !oi.isDefined() );
         }
         else
         {
             assert( oi.isDefined() );
-            index = oi.get();
         }
+        index = oi;
     }
 }
 

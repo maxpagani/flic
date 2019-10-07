@@ -17,20 +17,20 @@ void test_base()
     std::array<std::string,4> check{"0","1","2","3"};
     for( int i=0; i<4; ++i )
     {
-        assert( mapped.isValid() );
+        assert(mapped.isDefined() );
         Option<std::string> first = mapped.get();
         assert( first.isDefined() );
         assert( first.get() == check[i] );
         auto oi = mapped.next();
-        if( i==4 )
+        if( i>=3 )
         {
-            assert( oi.isEmpty() );
+            assert( !oi.isDefined() );
         }
         else
         {
             assert( oi.isDefined() );
-            mapped = oi.get();
         }
+        mapped = oi;
     }
 }
 

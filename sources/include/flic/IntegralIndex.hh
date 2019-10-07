@@ -29,8 +29,8 @@ class IntegralIndex
 
         IntegralIndex( T begin, T end, T step=static_cast<T>(1) );
 
-        IntegralIndex<T> next() const;
-        bool isValid() const;
+        IntegralIndex<T> constexpr next() const;
+        bool constexpr isDefined() const;
         Option<T> get() const;
 
         IntegralIndex<T> invalid() const;
@@ -52,9 +52,10 @@ IntegralIndex<T>::IntegralIndex( T begin, T end, T step ) :
 }
 
 template<typename T>
-IntegralIndex<T> IntegralIndex<T>::next() const
+IntegralIndex<T> constexpr
+IntegralIndex<T>::next() const
 {
-    if( isValid() )
+    if( isDefined() )
     {
         return IntegralIndex<T>{ m_current+m_step, m_end, m_step };
     }
@@ -64,8 +65,8 @@ IntegralIndex<T> IntegralIndex<T>::next() const
     }
 }
 
-template<typename T> inline 
-bool IntegralIndex<T>::isValid() const
+template<typename T> inline constexpr
+bool IntegralIndex<T>::isDefined() const
 {
     if( m_step > 0 )
     {
@@ -81,7 +82,7 @@ bool IntegralIndex<T>::isValid() const
 template<typename T>
 Option<T> IntegralIndex<T>::get() const
 {
-    if( isValid() ) 
+    if( isDefined() )
     {
         return Some( m_current );
     }

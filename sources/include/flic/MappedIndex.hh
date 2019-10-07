@@ -25,7 +25,7 @@ class MappedIndex
         MappedIndex& operator=( MappedIndex const& ) = default;
 
         MappedIndex<B,Idx> next() const;
-        bool isValid() const;
+        bool isDefined() const;
         Option<IndexedType> get() const;
 
         MappedIndex<B,Idx> invalid() const;
@@ -48,10 +48,10 @@ MappedIndex<B,Idx>::next() const
     return MappedIndex( result, m_map );
 }
 
-template<typename B,typename Idx> bool
-MappedIndex<B,Idx>::isValid() const
+template<typename B,typename Idx> bool inline
+MappedIndex<B,Idx>::isDefined() const
 {
-    return m_base.isValid();
+    return m_base.isDefined();
 }
 
 template<typename B,typename Idx> auto 

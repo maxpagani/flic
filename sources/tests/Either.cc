@@ -36,6 +36,7 @@ namespace {
         try
         {
             auto x = r.left();
+            (void)x;
             assert( false );
         }
         catch( std::bad_variant_access const& )

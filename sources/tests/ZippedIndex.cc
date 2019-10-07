@@ -24,12 +24,12 @@ namespace
         ZippedIndex<IntegralIndex<int>,IntegralIndex<int>> index{left,right};
         int count = 0;
 
-        for( ; index.isValid(); index = index.next() )
+        for( ; index.isDefined(); index = index.next() )
         {
             assert( index.get().get() == std::make_pair( count, 3-count ) );
             ++count;
         }
-        assert( !index.isValid() );
+        assert( !index.isDefined() );
     }
 
     void test_shorter_left()
@@ -40,12 +40,12 @@ namespace
         ZippedIndex<IntegralIndex<int>,IntegralIndex<int>> index{left,right};
         int count = 0;
 
-        for( ; index.isValid(); index = index.next() )
+        for( ; index.isDefined(); index = index.next() )
         {
             assert( index.get().get() == std::make_pair( count, 3-count ) );
             ++count;
         }
-        assert( !index.isValid() );
+        assert( !index.isDefined() );
     }
 
     void test_shorter_right()
@@ -56,12 +56,12 @@ namespace
         ZippedIndex<IntegralIndex<int>,IntegralIndex<int>> index{left,right};
         int count = 0;
 
-        for( ; index.isValid(); index = index.next() )
+        for( ; index.isDefined(); index = index.next() )
         {
             assert( index.get().get() == std::make_pair( count, 3-count ) );
             ++count;
         }
-        assert( !index.isValid() );
+        assert( !index.isDefined() );
     }
 }
 

@@ -139,7 +139,6 @@ demo_applier()
         .filter( Lambda(x,x>3) )
         .map<std::string>( Lambda(x,std::to_string(x)))
         .fold( "seq:", []( std::string const& r, std::string const& x ){ return r+x; } );
-    std::cout << "r=" << r << "\n";
     assert( r == "seq:456789" );
 }
 
