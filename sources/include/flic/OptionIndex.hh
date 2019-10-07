@@ -64,7 +64,7 @@ class OptionIndex
          *         valid).
          * @return false no more elements in the sequence.
          */
-        bool isValid() const;
+        bool isDefined() const;
     private:
         Option<T> m_option;
 };
@@ -99,7 +99,7 @@ OptionIndex<T>::get() const
 
 template<typename T>
 inline bool
-OptionIndex<T>::isValid() const
+OptionIndex<T>::isDefined() const
 {
     return m_option.isDefined();
 }
