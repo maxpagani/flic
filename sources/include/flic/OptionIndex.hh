@@ -87,7 +87,7 @@ OptionIndex<T>::OptionIndex( Option<T>&& source ) : m_option{ std::move( source 
 template<typename T> OptionIndex<T>
 OptionIndex<T>::next() const
 {
-    OptionIndex{ None<T>() };
+    return OptionIndex{ None<T>() };
 }
 
 template<typename T>
