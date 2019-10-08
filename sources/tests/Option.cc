@@ -14,6 +14,7 @@ namespace
     {
         auto a = Some( 3 );
         assert( a.isDefined() );
+        assert( !a.isEmpty());
         assert( a.get() == 3 );
 
         assert( a == Some(3) );

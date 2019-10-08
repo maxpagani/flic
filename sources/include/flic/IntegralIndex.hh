@@ -42,7 +42,11 @@ class IntegralIndex
         T m_step;
 };
 
-template<typename T>
+// :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+// :::::::::::::::::::::::::::::::::::::::::::::::::::::::: implementation :::
+// :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template<typename T> inline
 IntegralIndex<T>::IntegralIndex( T begin, T end, T step ) :
                   m_current{begin},
                   m_end{ end },
@@ -76,10 +80,9 @@ bool IntegralIndex<T>::isDefined() const
     {
         return m_current > m_end;
     }
-    
 }
 
-template<typename T>
+template<typename T> inline constexpr
 Option<T> IntegralIndex<T>::get() const
 {
     if( isDefined() )
@@ -92,15 +95,15 @@ Option<T> IntegralIndex<T>::get() const
     }
 }
 
-template<typename T>
+template<typename T> inline
 IntegralIndex<T> IntegralIndex<T>::invalid() const
 {
     return IntegralIndex<T>{m_end,m_end,m_step};
 }
 
 
-template<typename T>
-bool operator==( IntegralIndex<T> const& lhs, IntegralIndex<T> const& rhs )
+template<typename T> inline bool
+operator==( IntegralIndex<T> const& lhs, IntegralIndex<T> const& rhs )
 {
     return lhs.m_current == rhs.m_current &&
            lhs.m_end && rhs.m_end &&
