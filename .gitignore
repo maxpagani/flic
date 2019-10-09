@@ -1,0 +1,9 @@
+sources/tests/a.exe
+sources/tests/a.exe.stackdump
+sources/a.exe
+sources/*.stackdump
+CMakeCache.txt
+build
+*.stackdump
+**/*.gch
+**/*.ii
