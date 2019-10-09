@@ -18,10 +18,10 @@ namespace
     {
         auto a = Some( 3 );
         auto i = OptionIndex( a );
-        assert( i.isValid() );
+        assert( i.isDefined() );
         assert( i.get() == a );
         i = i.next();
-        assert( !i.isValid() );
+        assert( !i.isDefined() );
         assert( i.get() == None<int>() );
     }
 
@@ -29,7 +29,7 @@ namespace
     {
         auto a = None<int>();
         auto i = OptionIndex( a );
-        assert( !i.isValid() );
+        assert( !i.isDefined() );
         assert( i.get() == None<int>() );
     }
 }

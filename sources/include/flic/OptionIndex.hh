@@ -46,7 +46,7 @@ class OptionIndex
          * 
          * @return OptionIndex<T> 
          */
-        OptionIndex<T> next() const;
+        constexpr OptionIndex<T> next() const;
 
         /**
          * @brief Retrieve the current referenced element.
@@ -54,7 +54,7 @@ class OptionIndex
          * 
          * @return Option<T> 
          */
-        Option<T> get() const;
+        constexpr Option<T> get() const;
 
         /**
          * @brief Returns true if you can invoke next on this
@@ -64,7 +64,7 @@ class OptionIndex
          *         valid).
          * @return false no more elements in the sequence.
          */
-        bool isDefined() const;
+        bool constexpr isDefined() const;
     private:
         Option<T> m_option;
 };
@@ -84,21 +84,21 @@ OptionIndex<T>::OptionIndex( Option<T>&& source ) : m_option{ std::move( source 
 {
 }
 
-template<typename T> OptionIndex<T>
+template<typename T> constexpr OptionIndex<T>
 OptionIndex<T>::next() const
 {
     return OptionIndex{ None<T>() };
 }
 
 template<typename T>
-inline Option<T>
+inline constexpr Option<T>
 OptionIndex<T>::get() const
 {
     return m_option;
 }
 
 template<typename T>
-inline bool
+inline constexpr bool
 OptionIndex<T>::isDefined() const
 {
     return m_option.isDefined();
