@@ -25,8 +25,8 @@ class Option
         template<typename Fn> constexpr
         std::invoke_result_t<Fn,A> flatMap( Fn f ) const;
 
-        constexpr bool isDefined() const;
-        constexpr bool isEmpty() const;
+        [[nodiscard]] constexpr bool isDefined() const;
+        [[nodiscard]] constexpr bool isEmpty() const;
         
         constexpr A const& get() const;
     private:
